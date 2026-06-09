@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Picker — HEX, RGB, HSL Converter Free Online</title>
+<meta name="description" content="Free online color picker tool. Convert between HEX, RGB, HSL, RGBA formats instantly. Check WCAG contrast ratios, generate complementary palettes, and get ready-to-use CSS code.">
+<meta name="keywords" content="color picker, hex to rgb, rgb to hex, hsl converter, color palette, wcag contrast checker, css color, color tool">
+<link rel="canonical" href="https://color-picker.pages.dev/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Color Picker — HEX, RGB, HSL Converter Free Online">
+<meta property="og:description" content="Free online color picker. Convert HEX, RGB, HSL, RGBA. Check WCAG contrast. Generate palettes. Copy CSS instantly.">
+<meta property="og:url" content="https://color-picker.pages.dev/">
+<meta property="og:image" content="https://color-picker.pages.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Color Picker — Free Online HEX RGB HSL Converter">
+<meta name="twitter:description" content="Convert colors, check contrast, generate palettes.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Color Picker",
+  "description": "Free online color picker tool to convert between HEX, RGB, HSL, RGBA formats with WCAG contrast checking and palette generation.",
+  "url": "https://color-picker.pages.dev/",
+  "applicationCategory": "DesignApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["HEX to RGB conversion","RGB to HEX conversion","HSL color picker","WCAG contrast checker","Complementary palette generator","CSS code output"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between HEX and RGB?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HEX and RGB represent the same colors in different formats. HEX is a 6-character hexadecimal string (e.g. #FF5733) commonly used in CSS and design tools. RGB uses three decimal numbers for red, green, and blue channels (e.g. rgb(255, 87, 51)). They are fully interchangeable — every HEX color has an exact RGB equivalent."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is HSL and when should I use it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HSL stands for Hue, Saturation, Lightness. Unlike HEX or RGB which describe raw color channels, HSL describes color in human-perceptible terms: hue (0–360° on the color wheel), saturation (0–100% intensity), and lightness (0–100% brightness). Use HSL when you want to systematically create lighter/darker variants or adjust color vibrancy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does WCAG contrast ratio mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "WCAG (Web Content Accessibility Guidelines) defines minimum contrast ratios between text and background colors. AA level requires at least 4.5:1 for normal text and 3:1 for large text. AAA level requires 7:1 for normal text and 4.5:1 for large text. Meeting these ratios ensures your text is readable for users with low vision."
+      }
+    }
+  ]
+}
+</script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--dim:#8b949e;--green:#238636;--blue:#1f6feb;--blue-hover:#388bfd;--radius:8px}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+header{text-align:center;padding:2rem 1rem 1rem}
+header h1{font-size:clamp(1.4rem,4vw,2rem);font-weight:700}
+header p{color:var(--dim);margin-top:.5rem;font-size:.95rem}
+
+main{max-width:960px;margin:0 auto;padding:0 1rem 3rem}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem}
+
+/* Preview */
+.preview-area{display:flex;gap:1.5rem;align-items:stretch;flex-wrap:wrap}
+.color-preview{flex:1;min-width:200px;min-height:160px;border-radius:var(--radius);border:2px solid var(--border);transition:background-color .15s;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.picker-col{display:flex;flex-direction:column;gap:.75rem;align-items:center;justify-content:center}
+.picker-col input[type=color]{width:80px;height:80px;border:none;border-radius:var(--radius);cursor:pointer;background:none;padding:0}
+.picker-col input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.picker-col input[type=color]::-webkit-color-swatch{border:2px solid var(--border);border-radius:var(--radius)}
+
+/* Inputs */
+.input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.field label{display:block;font-size:.8rem;color:var(--dim);margin-bottom:.25rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.field .row{display:flex;gap:.4rem}
+.field input[type=text],.field input[type=number]{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.5rem .65rem;color:var(--text);font-size:.95rem;font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--blue)}
+
+/* Copy row */
+.copy-row{display:flex;align-items:center;gap:.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.45rem .65rem;margin-bottom:.5rem}
+.copy-row code{flex:1;font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:.88rem;word-break:break-all}
+.copy-btn{background:var(--green);color:#fff;border:none;border-radius:5px;padding:.3rem .65rem;cursor:pointer;font-size:.78rem;font-weight:600;white-space:nowrap;transition:opacity .15s}
+.copy-btn:hover{opacity:.85}
+.copy-btn.copied{background:var(--blue)}
+
+.section-title{font-size:1.1rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+/* Contrast */
+.contrast-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.contrast-box{border-radius:var(--radius);padding:1rem;text-align:center;font-weight:700;font-size:1rem}
+.contrast-box .ratio{font-size:1.8rem;margin:.5rem 0}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:4px;font-size:.75rem;font-weight:700;margin:.15rem}
+.badge.pass{background:#238636;color:#fff}
+.badge.fail{background:#da3633;color:#fff}
+
+/* Palette */
+.palette-row{display:flex;gap:.5rem;flex-wrap:wrap}
+.palette-swatch{width:60px;height:60px;border-radius:var(--radius);border:2px solid var(--border);cursor:pointer;position:relative;transition:transform .1s}
+.palette-swatch:hover{transform:scale(1.1)}
+.palette-swatch .hex-tip{position:absolute;bottom:-1.4rem;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--dim);white-space:nowrap;font-family:'SF Mono',SFMono-Regular,Consolas,monospace}
+
+/* Popular palettes */
+.popular-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.popular-group h4{font-size:.85rem;color:var(--dim);margin-bottom:.5rem}
+.popular-colors{display:flex;gap:4px;flex-wrap:wrap}
+.popular-colors .sw{width:28px;height:28px;border-radius:4px;cursor:pointer;border:1px solid var(--border);transition:transform .1s}
+.popular-colors .sw:hover{transform:scale(1.2)}
+
+/* CSS output */
+.css-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:1rem;font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:.85rem;position:relative}
+.css-output .copy-btn{position:absolute;top:.5rem;right:.5rem}
+
+/* FAQ */
+.faq details{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.5rem;overflow:hidden}
+.faq summary{padding:.75rem 1rem;cursor:pointer;font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.faq summary::after{content:'+';font-size:1.2rem;color:var(--dim);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq .answer{padding:0 1rem 1rem;color:var(--dim);font-size:.9rem;line-height:1.7}
+
+footer{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);color:var(--dim);font-size:.85rem}
+footer a{margin:0 .5rem}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:.5rem 1.2rem;border-radius:var(--radius);font-weight:600;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
+.toast.show{opacity:1}
+
+@media(max-width:600px){
+  .preview-area{flex-direction:column}
+  .contrast-grid{grid-template-columns:1fr}
+  .palette-swatch{width:48px;height:48px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎨 Color Picker — HEX, RGB, HSL Converter</h1>
+  <p>Free online tool. Pick colors, convert formats, check contrast, generate palettes.</p>
+</header>
+
+<main>
+
+<!-- Preview + Picker -->
+<div class="card">
+  <div class="preview-area">
+    <div class="color-preview" id="preview" style="background-color:#1f6feb;color:#fff">#1F6FEB</div>
+    <div class="picker-col">
+      <input type="color" id="nativePicker" value="#1f6feb" aria-label="Color picker">
+      <span style="font-size:.8rem;color:var(--dim)">Click to pick</span>
+    </div>
+  </div>
+</div>
+
+<!-- Manual Inputs -->
+<div class="card">
+  <div class="section-title">Color Values</div>
+  <div class="input-grid">
+    <div class="field">
+      <label>HEX</label>
+      <div class="row"><input type="text" id="hexInput" value="#1f6feb" maxlength="7" spellcheck="false"></div>
+    </div>
+    <div class="field">
+      <label>R (0–255)</label>
+      <div class="row"><input type="number" id="rInput" value="31" min="0" max="255"></div>
+    </div>
+    <div class="field">
+      <label>G (0–255)</label>
+      <div class="row"><input type="number" id="gInput" value="111" min="0" max="255"></div>
+    </div>
+    <div class="field">
+      <label>B (0–255)</label>
+      <div class="row"><input type="number" id="bInput" value="235" min="0" max="255"></div>
+    </div>
+    <div class="field">
+      <label>Hue (0–360°)</label>
+      <div class="row"><input type="number" id="hInput" value="217" min="0" max="360"></div>
+    </div>
+    <div class="field">
+      <label>Saturation (0–100%)</label>
+      <div class="row"><input type="number" id="sInput" value="83" min="0" max="100"></div>
+    </div>
+    <div class="field">
+      <label>Lightness (0–100%)</label>
+      <div class="row"><input type="number" id="lInput" value="52" min="0" max="100"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Copyable Formats -->
+<div class="card">
+  <div class="section-title">Copy Color Values</div>
+  <div class="copy-row"><code id="hexVal">#1F6FEB</code><button class="copy-btn" onclick="copyVal('hexVal')">Copy</button></div>
+  <div class="copy-row"><code id="rgbVal">rgb(31, 111, 235)</code><button class="copy-btn" onclick="copyVal('rgbVal')">Copy</button></div>
+  <div class="copy-row"><code id="hslVal">hsl(217, 83%, 52%)</code><button class="copy-btn" onclick="copyVal('hslVal')">Copy</button></div>
+  <div class="copy-row"><code id="rgbaVal">rgba(31, 111, 235, 1)</code><button class="copy-btn" onclick="copyVal('rgbaVal')">Copy</button></div>
+  <div class="copy-row"><code id="hslaVal">hsla(217, 83%, 52%, 1)</code><button class="copy-btn" onclick="copyVal('hslaVal')">Copy</button></div>
+</div>
+
+<!-- Contrast Checker -->
+<div class="card">
+  <div class="section-title">WCAG Contrast Checker</div>
+  <div class="contrast-grid">
+    <div class="contrast-box" id="contrastWhite" style="background-color:#1f6feb;color:#fff">
+      <div>vs White Text</div>
+      <div class="ratio" id="ratioWhite">—</div>
+      <div id="badgesWhite"></div>
+    </div>
+    <div class="contrast-box" id="contrastBlack" style="background-color:#1f6feb;color:#000">
+      <div>vs Black Text</div>
+      <div class="ratio" id="ratioBlack">—</div>
+      <div id="badgesBlack"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Palette Generator -->
+<div class="card">
+  <div class="section-title">Generated Palette</div>
+  <div class="palette-row" id="palette"></div>
+  <div style="clear:both;margin-top:1.5rem"></div>
+  <div class="palette-row" id="analogPalette"></div>
+</div>
+
+<!-- Popular Palettes -->
+<div class="card">
+  <div class="section-title">Popular Color Palettes <span style="font-weight:400;font-size:.85rem;color:var(--dim)">(click to select)</span></div>
+  <div class="popular-grid" id="popularGrid"></div>
+</div>
+
+<!-- CSS Output -->
+<div class="card">
+  <div class="section-title">CSS Code</div>
+  <div class="css-output">
+    <button class="copy-btn" onclick="copyVal('cssCode')">Copy</button>
+    <code id="cssCode">background-color: #1f6feb; color: #fff;</code>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="card faq">
+  <div class="section-title">Frequently Asked Questions</div>
+  <details>
+    <summary>What is the difference between HEX and RGB?</summary>
+    <div class="answer">HEX and RGB represent the same colors in different formats. HEX is a 6-character hexadecimal string (e.g. <code>#FF5733</code>) commonly used in CSS and design tools. RGB uses three decimal numbers for red, green, and blue channels (e.g. <code>rgb(255, 87, 51)</code>). They are fully interchangeable — every HEX color has an exact RGB equivalent.</div>
+  </details>
+  <details>
+    <summary>What is HSL and when should I use it?</summary>
+    <div class="answer">HSL stands for Hue, Saturation, Lightness. Unlike HEX or RGB which describe raw color channels, HSL describes color in human-perceptible terms: hue (0–360° on the color wheel), saturation (0–100% intensity), and lightness (0–100% brightness). Use HSL when you want to systematically create lighter/darker variants or adjust color vibrancy.</div>
+  </details>
+  <details>
+    <summary>What does WCAG contrast ratio mean?</summary>
+    <div class="answer">WCAG (Web Content Accessibility Guidelines) defines minimum contrast ratios between text and background colors. AA level requires at least 4.5:1 for normal text and 3:1 for large text. AAA level requires 7:1 for normal text and 4.5:1 for large text. Meeting these ratios ensures your text is readable for users with low vision.</div>
+  </details>
+</div>
+
+</main>
+
+<footer>
+  <a href="/">Color Picker</a> ·
+  <a href="https://github.com/Chesten223/color-picker">GitHub</a>
+  <p style="margin-top:.5rem">Free, open-source color tool. No tracking, no cookies.</p>
+</footer>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+(function(){
+  // State
+  let R=31,G=111,B=235;
+
+  // DOM
+  const $ = id => document.getElementById(id);
+  const nativePicker=$('nativePicker'), hexInput=$('hexInput');
+  const rInput=$('rInput'), gInput=$('gInput'), bInput=$('bInput');
+  const hInput=$('hInput'), sInput=$('sInput'), lInput=$('lInput');
+  const preview=$('preview');
+
+  // Color math
+  function rgbToHex(r,g,b){return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join('').toUpperCase()}
+  function hexToRgb(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];if(hex.length!==6)return null;const n=parseInt(hex,16);return isNaN(n)?null:{r:(n>>16)&255,g:(n>>8)&255,b:n&255}}
+  function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min){h=s=0}else{const d=max-min;s=l>.5?d/(2-max-min):d/(max+min);switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break}}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)}}
+  function hslToRgb(h,s,l){h/=360;s/=100;l/=100;let r,g,b;if(s===0){r=g=b=l}else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q=l<.5?l*(1+s):l+s-l*s;const p=2*l-q;r=hue2rgb(p,q,h+1/3);g=hue2rgb(p,q,h);b=hue2rgb(p,q,h-1/3)}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)}}
+  function luminance(r,g,b){const a=[r,g,b].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*a[0]+.7152*a[1]+.0722*a[2]}
+  function contrastRatio(l1,l2){const lighter=Math.max(l1,l2),darker=Math.min(l1,l2);return(lighter+.05)/(darker+.05)}
+
+  function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,Math.round(v)))}
+
+  // Update everything from R,G,B
+  function update(source){
+    R=clamp(R,0,255);G=clamp(G,0,255);B=clamp(B,0,255);
+    const hex=rgbToHex(R,G,B);
+    const hsl=rgbToHsl(R,G,B);
+
+    // Preview
+    preview.style.backgroundColor=hex;
+    preview.textContent=hex;
+    preview.style.color=luminance(R,G,B)>.4?'#000':'#fff';
+
+    // Sync inputs not being edited
+    if(source!=='picker') nativePicker.value=hex;
+    if(source!=='hex') hexInput.value=hex;
+    if(source!=='rgb'){rInput.value=R;gInput.value=G;bInput.value=B}
+    if(source!=='hsl'){hInput.value=hsl.h;sInput.value=hsl.s;lInput.value=hsl.l}
+
+    // Copyable values
+    $('hexVal').textContent=hex;
+    $('rgbVal').textContent=`rgb(${R}, ${G}, ${B})`;
+    $('hslVal').textContent=`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+    $('rgbaVal').textContent=`rgba(${R}, ${G}, ${B}, 1)`;
+    $('hslaVal').textContent=`hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 1)`;
+
+    // Contrast
+    updateContrast();
+    // Palette
+    updatePalette(hsl);
+    // CSS
+    const textCol=luminance(R,G,B)>.4?'#000000':'#FFFFFF';
+    $('cssCode').textContent=`background-color: ${hex}; color: ${textCol};`;
+  }
+
+  function updateContrast(){
+    const lum=luminance(R,G,B);
+    const lumW=luminance(255,255,255);
+    const lumB=luminance(0,0,0);
+    const rW=contrastRatio(lum,lumW);
+    const rB=contrastRatio(lum,lumB);
+    $('ratioWhite').textContent=rW.toFixed(2)+':1';
+    $('ratioBlack').textContent=rB.toFixed(2)+':1';
+    $('contrastWhite').style.backgroundColor=rgbToHex(R,G,B);
+    $('contrastBlack').style.backgroundColor=rgbToHex(R,G,B);
+    $('badgesWhite').innerHTML=badge('AA Normal',rW>=4.5)+badge('AA Large',rW>=3)+badge('AAA Normal',rW>=7)+badge('AAA Large',rW>=4.5);
+    $('badgesBlack').innerHTML=badge('AA Normal',rB>=4.5)+badge('AA Large',rB>=3)+badge('AAA Normal',rB>=7)+badge('AAA Large',rB>=4.5);
+  }
+  function badge(label,pass){return `<span class="badge ${pass?'pass':'fail'}">${label} ${pass?'✓':'✗'}</span>`}
+
+  function updatePalette(hsl){
+    // Complementary + split complementary + triadic (8 colors)
+    const angles=[0,30,60,120,180,210,240,300];
+    let html='';
+    angles.forEach(a=>{
+      const h=(hsl.h+a)%360;
+      const rgb=hslToRgb(h,hsl.s,hsl.l);
+      const hex=rgbToHex(rgb.r,rgb.g,rgb.b);
+      html+=`<div class="palette-swatch" style="background:${hex}" title="${hex}" onclick="window._pickHex('${hex}')"><span class="hex-tip">${hex}</span></div>`;
+    });
+    $('palette').innerHTML='<div style="font-size:.8rem;color:var(--dim);margin-bottom:.3rem;width:100%">Complementary &amp; Harmony</div>'+html;
+
+    // Analogous
+    let ahtml='';
+    for(let i=-2;i<=2;i++){
+      const h=(hsl.h+i*15+360)%360;
+      const rgb=hslToRgb(h,hsl.s,hsl.l);
+      const hex=rgbToHex(rgb.r,rgb.g,rgb.b);
+      ahtml+=`<div class="palette-swatch" style="background:${hex}" title="${hex}" onclick="window._pickHex('${hex}')"><span class="hex-tip">${hex}</span></div>`;
+    }
+    $('analogPalette').innerHTML='<div style="font-size:.8rem;color:var(--dim);margin-bottom:.3rem;width:100%">Analogous</div>'+ahtml;
+  }
+
+  // Popular palettes
+  const PALETTES={
+    'Material Blue':['#E3F2FD','#BBDEFB','#90CAF9','#64B5F6','#42A5F5','#2196F3','#1E88E5','#1976D2','#1565C0','#0D47A1'],
+    'Material Red':['#FFEBEE','#FFCDD2','#EF9A9A','#E57373','#EF5350','#F44336','#E53935','#D32F2F','#C62828','#B71C1C'],
+    'Material Green':['#E8F5E9','#C8E6C9','#A5D6A7','#81C784','#66BB6A','#4CAF50','#43A047','#388E3C','#2E7D32','#1B5E20'],
+    'Tailwind Slate':['#f8fafc','#f1f5f9','#e2e8f0','#cbd5e1','#94a3b8','#64748b','#475569','#334155','#1e293b','#0f172a'],
+    'Tailwind Violet':['#f5f3ff','#ede9fe','#ddd6fe','#c4b5fd','#a78bfa','#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95'],
+    'Tailwind Amber':['#fffbeb','#fef3c7','#fde68a','#fcd34d','#fbbf24','#f59e0b','#d97706','#b45309','#92400e','#78350f'],
+  };
+  function buildPopular(){
+    let html='';
+    for(const[name,colors]of Object.entries(PALETTES)){
+      html+=`<div class="popular-group"><h4>${name}</h4><div class="popular-colors">${colors.map(c=>`<div class="sw" style="background:${c}" title="${c}" onclick="window._pickHex('${c}')"></div>`).join('')}</div></div>`;
+    }
+    $('popularGrid').innerHTML=html;
+  }
+
+  // External picker
+  window._pickHex=function(hex){
+    const rgb=hexToRgb(hex);
+    if(!rgb)return;
+    R=rgb.r;G=rgb.g;B=rgb.b;
+    update('external');
+  };
+
+  // Copy
+  window.copyVal=function(id){
+    const text=$(id).textContent;
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn=event.target;
+      const orig=btn.textContent;
+      btn.textContent='Copied!';btn.classList.add('copied');
+      const toast=$('toast');toast.classList.add('show');
+      setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');toast.classList.remove('show')},1200);
+    });
+  };
+
+  // Event listeners
+  nativePicker.addEventListener('input',()=>{const rgb=hexToRgb(nativePicker.value);if(rgb){R=rgb.r;G=rgb.g;B=rgb.b}update('picker')});
+  hexInput.addEventListener('input',()=>{const rgb=hexToRgb(hexInput.value);if(rgb){R=rgb.r;G=rgb.g;B=rgb.b;update('hex')}});
+  [rInput,gInput,bInput].forEach((inp,i)=>{
+    inp.addEventListener('input',()=>{
+      R=parseInt(rInput.value)||0;G=parseInt(gInput.value)||0;B=parseInt(bInput.value)||0;
+      update('rgb');
+    });
+  });
+  [hInput,sInput,lInput].forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const h=parseInt(hInput.value)||0,s=parseInt(sInput.value)||0,l=parseInt(lInput.value)||0;
+      const rgb=hslToRgb(h,s,l);R=rgb.r;G=rgb.g;B=rgb.b;update('hsl');
+    });
+  });
+
+  // Init
+  buildPopular();
+  update('init');
+})();
+</script>
+</body>
+</html>
